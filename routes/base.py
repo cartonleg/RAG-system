@@ -2,6 +2,6 @@ from fastapi import APIRouter
 
 base_router=APIRouter()
 
-@base_router('/')
+@base_router.get('/')
 def base_fun():
-    print('hello there')
+    return 'hello there'
