@@ -8,5 +8,5 @@ data_router=APIRouter(prefix='/data')
 @data_router.post('/upload/{project_id}')
 async def upload_data(project_id:str, file:UploadFile, 
                 app_settings:Settings = Depends(get_settings)):
-    is_valid = DataController().val_file(file=file)
-    return is_valid
+    is_valid, reason = DataController().val_file(file=file)
+    return f"is valid? {is_valid}'", f"status: {reason}"
