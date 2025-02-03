@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     APP_NAME: str
     APP_VERSION: str
-    FILE_ALLOWED_EXTENSION: list
+    ALLOWED_FILE_TYPE: list
     FILE_MAX_SIZE: int
 
     class Config:

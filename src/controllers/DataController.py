@@ -1,4 +1,8 @@
-from controllers.BaseController import BaseController
+from .BaseController import BaseController
+from fastapi import UploadFile
 
 class DataController(BaseController):
-    pass
+    def __init__(self):
+        super().__init__()
+
+    def val_file(self, file):
