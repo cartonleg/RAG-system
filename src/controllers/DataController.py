@@ -1,6 +1,9 @@
 from .BaseController import BaseController
+from .ProjectController import ProjectController
 from fastapi import UploadFile
 from models import ResponseSignal
+import re
+import os
 
 class DataController(BaseController):
     def __init__(self):
@@ -16,3 +19,21 @@ class DataController(BaseController):
             return True, ResponseSignal.VAL_SUCCESS.value
         except Exception as e:
             return False, ResponseSignal.UPLOAD_FAIL.value
+        
+    def gen_unique_filename(self, orig_filename: str, project_id: str):
+        rand_key = self.random_string_generator()
+        project_path = ProjectController().get_project_path(project_id=project_id)
+        file_name = self.clean_filename(orig_filename=orig_filename)
+
+        file_path = os.path.join(project_path, rand_key + '_' + file_name)
+
+        while os.path.exists(file_path):
+            rand_key = self.random_string_generator()
+            file_path = os.path.join(project_path, rand_key + '_' + file_name)
+        
+        return file_path
+
+    def clean_filename(self, orig_filename:str):
+        output = (re.sub(r'[^\w.]', '', orig_filename.strip())).replace(' ', '_')
+        return output
+
