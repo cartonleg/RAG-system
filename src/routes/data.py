@@ -6,6 +6,7 @@ import os
 import aiofiles
 from models import ResponseSignal
 import logging
+from .schemes.data import ProcessRequest
 
 
 logger = logging.getLogger('uvicorn.error')
@@ -36,4 +37,5 @@ async def upload_data(project_id:str, file:UploadFile,
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, 
                             content=ResponseSignal.UPLOAD_FAIL.value)
 
-    return JSONResponse(content=(ResponseSignal.UPLOAD_SUCCESS.value, ("file name = " + file_name)))
+    return JSONResponse(content=(ResponseSignal.UPLOAD_SUCCESS.value,
+                                 ("file name = " + file_name)))
