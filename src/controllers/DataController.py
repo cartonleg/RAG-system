@@ -20,7 +20,7 @@ class DataController(BaseController):
         except Exception as e:
             return False, ResponseSignal.UPLOAD_FAIL.value
         
-    def gen_unique_filename(self, orig_filename: str, project_id: str):
+    def gen_unique_filepath(self, orig_filename: str, project_id: str):
         rand_key = self.random_string_generator()
         project_path = ProjectController().get_project_path(project_id=project_id)
         file_name = self.clean_filename(orig_filename=orig_filename)
@@ -31,7 +31,7 @@ class DataController(BaseController):
             rand_key = self.random_string_generator()
             file_path = os.path.join(project_path, rand_key + '_' + file_name)
         
-        return file_path
+        return file_path, (rand_key+"_"+file_name)
 
     def clean_filename(self, orig_filename:str):
         output = (re.sub(r'[^\w.]', '', orig_filename.strip())).replace(' ', '_')

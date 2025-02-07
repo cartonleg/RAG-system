@@ -22,7 +22,7 @@ async def upload_data(project_id:str, file:UploadFile,
                             content=f'status: {reason}')
     
     proj_path = ProjectController().get_project_path(project_id=project_id)
-    file_path = DataController().gen_unique_filename(orig_filename=file.filename, 
+    file_path, file_name = DataController().gen_unique_filepath(orig_filename=file.filename, 
                                                      project_id=project_id)
 
     try:
@@ -36,4 +36,4 @@ async def upload_data(project_id:str, file:UploadFile,
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, 
                             content=ResponseSignal.UPLOAD_FAIL.value)
 
-    return JSONResponse(content=ResponseSignal.UPLOAD_SUCCESS.value)
+    return JSONResponse(content=(ResponseSignal.UPLOAD_SUCCESS.value, ("file name = " + file_name)))
