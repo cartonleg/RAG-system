@@ -76,10 +76,13 @@ async def process_endpoint(project_id: str, process_request: ProcessRequest, req
             chunk_text= chunk.page_content,
             chunk_metadata= chunk.metadata,
             chunk_order= i+1, 
-            chunk_project_id= project._id) 
+            chunk_project_id= project.id) 
         for i, chunk in enumerate(file_chunks)
         ]
 
     chunk_model = ChunkModel(db_client=request.app.db_client)
 
-    no_records = chunk_model.insert_many_chunks(chunks=file_chunks_records)
+    no_records = await chunk_model.insert_many_chunks(chunks=file_chunks_records)
+
+    return no_records
+
