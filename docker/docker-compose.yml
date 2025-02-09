@@ -1,0 +1,12 @@
+services:
+    mongodb:
+        image: mongo:8-noble
+        container_name: mongodb
+        ports:
+            - "27017:27017"
+        networks:
+            - backend
+        restart: always
+
+networks:
+    backend:
