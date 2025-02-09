@@ -54,10 +54,12 @@ async def process_endpoint(project_id: str, process_request: ProcessRequest, req
     file_id = process_request.file_id
     chunk_size = process_request.chunk_size
     overlap_size = process_request.overlap_size
+    do_reset = process_request.do_reset
 
     project_model = ProjectModel(db_client= request.app.db_client)
 
     project = await project_model.get_project_or_create_one(project_id=project_id)
+
 
     processcontroller = ProcessController(project_id=project_id)
 
@@ -70,6 +72,7 @@ async def process_endpoint(project_id: str, process_request: ProcessRequest, req
     if file_chunks == None or len(file_chunks) == 0:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, 
                             content=ResponseSignal.PROCESSING_FAILED)
+
     
     file_chunks_records = [
         DataChunk(
@@ -79,10 +82,17 @@ async def process_endpoint(project_id: str, process_request: ProcessRequest, req
             chunk_project_id= project.id) 
         for i, chunk in enumerate(file_chunks)
         ]
+    
 
     chunk_model = ChunkModel(db_client=request.app.db_client)
 
+
+    if do_reset == 1:
+        _ = await chunk_model.delete_chunks_by_project_id(project_id=project.id)
+        
+
     no_records = await chunk_model.insert_many_chunks(chunks=file_chunks_records)
 
-    return no_records
+    return JSONResponse(content=(ResponseSignal.PROCESSING_SUCCESS.value, 
+                                 ("number of inserted chunks = " + str(no_records))))
 
