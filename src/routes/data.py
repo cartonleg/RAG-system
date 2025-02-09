@@ -18,9 +18,9 @@ data_router=APIRouter(prefix='/data')
 async def upload_data(request: Request, project_id:str, file:UploadFile, 
                 app_settings:Settings = Depends(get_settings)):
     
-    project_model = ProjectModel(db_client=request.app.db_client)
+    project_model = ProjectModel(db_client= request.app.db_client)
 
-    project = project_model.get_project_or_create_one(project_id=project_id)
+    project = await project_model.get_project_or_create_one(project_id=project_id)
 
     is_valid, reason = DataController().val_file(file=file)
     
@@ -44,7 +44,7 @@ async def upload_data(request: Request, project_id:str, file:UploadFile,
                             content=ResponseSignal.UPLOAD_FAIL.value)
 
     return JSONResponse(content=(ResponseSignal.UPLOAD_SUCCESS.value,
-                                 ("file name = " + file_name), ("project id = " + str(project._id))))
+                                 ("file name = " + file_name)))
 
 @data_router.post('/process/{project_id}')
 async def process_endpoint(project_id: str, process_request: ProcessRequest):

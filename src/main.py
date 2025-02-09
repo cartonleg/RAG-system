@@ -4,16 +4,16 @@ from helpers.config import get_settings
 from motor.motor_asyncio import AsyncIOMotorClient
 from contextlib import asynccontextmanager
 
-app = FastAPI()
-
 @asynccontextmanager
-async def lifespan(app):
+async def lifespan(app: FastAPI):
     app.mongo_conn = AsyncIOMotorClient(get_settings().MONGODB_URL)
     app.db_client = app.mongo_conn[get_settings().MONGODB_DATABASE]
 
     yield
 
     app.mongo_conn.close()
+
+app = FastAPI(lifespan=lifespan)
 
 
 app.include_router(base.base_router)
