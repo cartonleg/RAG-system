@@ -22,6 +22,6 @@ class Asset(BaseModel):
 
         return [{"key":[("asset_project_id", 1)],
                  "name":"asset_project_id_index", "unique": False},
-                {"key":[("asset_project_id", 1), ("asset_name", )], 
+                {"key":[("asset_project_id", 1), ("asset_name", 1)], 
                  "name":"asset_project_id_name_index", "unique": True}]
 

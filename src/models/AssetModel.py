@@ -12,7 +12,7 @@ class AssetModel(BaseDataModel):
     @classmethod
     async def create_instance(cls, db_client: object):
         instance = cls(db_client)
-        await instance.init_collection()
+        _ = await instance.init_collection()
         return instance
 
     async def init_collection(self):
