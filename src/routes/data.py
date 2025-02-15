@@ -55,7 +55,7 @@ async def upload_data(request: Request, project_id:str, file:UploadFile,
     asset_record = await asset_model.create_asset(asset=asset_resource)
     
     return JSONResponse(content=(ResponseSignal.UPLOAD_SUCCESS.value,
-                                 ("file name = " + file_name)))
+                                 ("file name = " + str(asset_record.id))))
 
 @data_router.post('/process/{project_id}')
 async def process_endpoint(project_id: str, process_request: ProcessRequest, request: Request):
