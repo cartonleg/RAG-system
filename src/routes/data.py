@@ -60,7 +60,6 @@ async def upload_data(request: Request, project_id:str, file:UploadFile,
 @data_router.post('/process/{project_id}')
 async def process_endpoint(project_id: str, process_request: ProcessRequest, request: Request):
     
-    file_id = process_request.file_id
     chunk_size = process_request.chunk_size
     overlap_size = process_request.overlap_size
     do_reset = process_request.do_reset
@@ -69,39 +68,58 @@ async def process_endpoint(project_id: str, process_request: ProcessRequest, req
 
     project = await project_model.get_project_or_create_one(project_id=project_id)
 
+    project_files_ids = []
+    if process_request.file_id:
+        project_files_ids = [process_request.file_id]
+    else:
+        asset_model = await AssetModel.create_instance(db_client= request.app.db_client)
+        project_files = await asset_model.get_all_project_assets(
+            asset_project_id = project.id, 
+            asset_type = AssetTypeEnum.FILE.value
+        )
+
+        project_files_ids = [file["asset_name"] for file in project_files]
+
+    if len(project_files_ids) == 0:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
+                            content=(ResponseSignal.NO_FILES_ERROR.value))
+
 
     processcontroller = ProcessController(project_id=project_id)
 
-    file_content = processcontroller.get_file_content(file_id=file_id)
-    file_chunks = processcontroller.process_file_content(file_content=file_content, 
-                                                         file_id=file_id, 
-                                                         chunk_size=chunk_size, 
-                                                         overlap_size=overlap_size)
-    
-    if file_chunks == None or len(file_chunks) == 0:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, 
-                            content=ResponseSignal.PROCESSING_FAILED)
-
-    
-    file_chunks_records = [
-        DataChunk(
-            chunk_text= chunk.page_content,
-            chunk_metadata= chunk.metadata,
-            chunk_order= i+1, 
-            chunk_project_id= project.id) 
-        for i, chunk in enumerate(file_chunks)
-        ]
-    
-
-    chunk_model = await ChunkModel.create_instance(db_client=request.app.db_client)
-
-
     if do_reset == 1:
-        _ = await chunk_model.delete_chunks_by_project_id(project_id=project.id)
+            _ = await chunk_model.delete_chunks_by_project_id(project_id=project.id)
+            
+    no_records = 0
+    no_files = 0
+    for file_id in project_files_ids:
+        file_content = processcontroller.get_file_content(file_id=file_id)
+        file_chunks = processcontroller.process_file_content(file_content=file_content, 
+                                                            file_id=file_id, 
+                                                            chunk_size=chunk_size, 
+                                                            overlap_size=overlap_size)
+        
+        if file_chunks == None or len(file_chunks) == 0:
+            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, 
+                                content=ResponseSignal.PROCESSING_FAILED)
+
+        
+        file_chunks_records = [
+            DataChunk(
+                chunk_text= chunk.page_content,
+                chunk_metadata= chunk.metadata,
+                chunk_order= i+1, 
+                chunk_project_id= project.id) 
+            for i, chunk in enumerate(file_chunks)
+            ]
         
 
-    no_records = await chunk_model.insert_many_chunks(chunks=file_chunks_records)
+        chunk_model = await ChunkModel.create_instance(db_client=request.app.db_client)
+
+        no_records += await chunk_model.insert_many_chunks(chunks=file_chunks_records)
+        no_files += 1
 
     return JSONResponse(content=(ResponseSignal.PROCESSING_SUCCESS.value, 
-                                 ("number of inserted chunks = " + str(no_records))))
+                                 ("number of inserted chunks = " + str(no_records)),
+                                 ("number of processed files = " + str(no_files))))
 
