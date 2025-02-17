@@ -87,13 +87,20 @@ async def process_endpoint(project_id: str, process_request: ProcessRequest, req
 
     processcontroller = ProcessController(project_id=project_id)
 
+    chunk_model = await ChunkModel.create_instance(db_client=request.app.db_client)
+
     if do_reset == 1:
             _ = await chunk_model.delete_chunks_by_project_id(project_id=project.id)
-            
+
     no_records = 0
     no_files = 0
     for file_id in project_files_ids:
         file_content = processcontroller.get_file_content(file_id=file_id)
+
+        if file_content is None:
+            logger.error(f"error while processing file: {file_id}")
+            continue
+
         file_chunks = processcontroller.process_file_content(file_content=file_content, 
                                                             file_id=file_id, 
                                                             chunk_size=chunk_size, 
@@ -112,9 +119,6 @@ async def process_endpoint(project_id: str, process_request: ProcessRequest, req
                 chunk_project_id= project.id) 
             for i, chunk in enumerate(file_chunks)
             ]
-        
-
-        chunk_model = await ChunkModel.create_instance(db_client=request.app.db_client)
 
         no_records += await chunk_model.insert_many_chunks(chunks=file_chunks_records)
         no_files += 1
