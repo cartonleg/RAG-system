@@ -7,7 +7,7 @@ class OpenAIProvider(LLMInterface):
     def __init__(self, api_key: str, api_url: str=None, 
                  default_input_max_character: int=1000,
                  default_generation_max_tokens: int=1000,
-                 default_generation_temperature: float=0.2):
+                 default_generation_temperature: float=0.7):
         self.api_key = api_key
         self.api_url = api_url
 
@@ -42,6 +42,7 @@ class OpenAIProvider(LLMInterface):
         
         if not self.generation_model_id:
             self.logger.error("OpenAI generation model was not set properly")
+            return None
 
         max_output_tokens = max_output_tokens if max_output_tokens else self.default_generation_max_tokens
         temperature = temperature if temperature else self.default_generation_temperature
