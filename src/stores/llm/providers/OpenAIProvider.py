@@ -1,18 +1,18 @@
-from ...LLMInterface import LLMInterface
-from ...LLMEnums import OpenAIEnums
+from ..LLMInterface import LLMInterface
+from ..LLMEnums import OpenAIEnums
 from openai import OpenAI
 import logging
 
 class OpenAIProvider(LLMInterface):
     def __init__(self, api_key: str, api_url: str=None, 
-                 default_input_max_character: int=1000,
+                 default_input_max_characters: int=1000,
                  default_generation_max_tokens: int=1000,
                  default_generation_temperature: float=0.7):
         
         self.api_key = api_key
         self.api_url = api_url
 
-        self.default_input_max_character = default_input_max_character
+        self.default_input_max_characters = default_input_max_characters
         self.default_generation_max_tokens = default_generation_max_tokens
         self.default_generation_temperature = default_generation_temperature
 
@@ -32,7 +32,7 @@ class OpenAIProvider(LLMInterface):
         self.embedding_size = embedding_size
 
     def process_text(self, text: str):
-        return text[:self.default_input_max_character].strip()
+        return text[:self.default_input_max_characters].strip()
 
     def generate_text(self, prompt: str, chat_history: list=[],
                       max_output_tokens: int=None,
