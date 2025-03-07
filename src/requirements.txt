@@ -11,3 +11,4 @@ motor==3.7.0
 openai==1.64.0
 huggingface-hub==0.29.2
 cohere==5.14.0
+qdrant-client==1.13.3
