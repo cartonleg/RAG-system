@@ -24,6 +24,7 @@ class NLPController(BaseController):
         return collection_info
     
     def index_into_vector_db(self, project: Project, chunks: List[DataChunk],
+                             chunks_ids: List[int],
                              do_reset: bool = False):
         
         # get collection_name
@@ -44,7 +45,8 @@ class NLPController(BaseController):
 
         # insert to vector db
         _ = self.vectordb_client.insert_many(collection_name = collection_name, texts = texts,
-                                             vectors = vectors, metadata = metadata)
+                                             vectors = vectors, metadata = metadata,
+                                             record_ids=chunks_ids)
         
         return True
     
