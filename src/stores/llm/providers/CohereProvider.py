@@ -75,6 +75,7 @@ class CohereProvider(LLMInterface):
         
         if not self.embedding_model_id:
             self.logger.error("Cohere embedding model was not set properly")
+            return None
 
         input_type = CohereEnums.DOCUMENT
         if document_type == DocumentTypeEnums.QUERY:
