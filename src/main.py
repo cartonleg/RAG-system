@@ -7,6 +7,7 @@ from stores.llm.LLMProviderFactory import LLMProviderFactory
 from stores.vectordb.VectorDBProviderFactory import VectorDBProviderFactory
 
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = get_settings()

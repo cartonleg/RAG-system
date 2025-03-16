@@ -36,6 +36,7 @@ async def index_project(request: Request, project_id: str, push_request: PushReq
 
     while has_records:
         page_chunks = await chunk_model.get_project_chunks(project_id=project.id, page_no=page_no)
+        logger.info(f"Page {page_no}: Fetched {len(page_chunks)} chunks")
         if len(page_chunks):
             page_no+=1
         

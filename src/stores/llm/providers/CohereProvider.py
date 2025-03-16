@@ -20,9 +20,9 @@ class CohereProvider(LLMInterface):
         self.embedding_model_id = None
         self.embedding_size = None
 
-        self.client = cohere.ClientV2(api_key=self.api_key)
-
         self.logger = logging.getLogger(__name__)
+
+        self.client = cohere.ClientV2(api_key=self.api_key)
 
     def set_generation_model(self, model_id: str):
         self.generation_model_id = model_id
