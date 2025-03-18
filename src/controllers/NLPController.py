@@ -3,6 +3,9 @@ from models.db_schemes import Project, DataChunk
 from stores.llm.LLMEnums import DocumentTypeEnums
 from typing import List
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 class NLPController(BaseController):
     def __init__(self, vectordb_client, generation_client, embedding_client, template_parser):
@@ -90,9 +93,10 @@ class NLPController(BaseController):
         system_prompt = self.template_parser.get("rag", "system_prompt")
             
         document_prompts = "\n".join([
-            self.template_parser.get("rag", "document_prompt",
-                                                             {"doc_num": idx + 1,
-                                                              "chunk_text": doc.text})
+            self.template_parser.get("rag", "document_prompt", {
+                    "doc_num": idx + 1,
+                    "chunk_text": self.generation_client.process_text(doc.text),
+            }) or "blah blah blah blah"
             for idx, doc in enumerate(retrieved_documents)
         ])
 
