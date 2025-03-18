@@ -1,6 +1,6 @@
 from string import Template
 
-system_prompt = """
+system_prompt = Template("""
 أنت مساعد يستجيب لاستفسارات المستخدمين.
 
 سيتم تزويدك بوثائق مرتبطة باستفسار المستخدم.
@@ -14,7 +14,7 @@ system_prompt = """
 كن ودودًا، وأجب بدقة، ولا تقدم أي معلومات غير مفيدة.
 
 قم بالرد بنفس لغة الاستفسار المقدم.
-"""
+""")
 
 document_prompt = Template("""
 الوثيقة رقم: $doc_num

@@ -1,7 +1,7 @@
 from string import Template
 
 
-system_prompt = """
+system_prompt = Template("""
 you are an assistant who responds to users
 
 you will be provided documents associated with the user's query
@@ -15,7 +15,7 @@ if for any other reason you couldn't generate a response then also apologise
 be friendly, answer with precision, don't give any information that is not helpful.
 
 respond in the language the query was given in
-"""
+""")
 
 document_prompt = Template("""
 Document No: $doc_num
