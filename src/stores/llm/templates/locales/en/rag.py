@@ -22,7 +22,10 @@ Document No: $doc_num
 Content: $chunk_text
 """)
 
-footer_prompt = Template("""
-Based on the documents above only, generate a response for the user.
-Anwer: 
-""")
+footer_prompt = Template("\n".join([
+"Based on the documents above only, generate a response for the user.",
+"the query: ",
+"$query",
+" ",
+"Anwer: " 
+]))
