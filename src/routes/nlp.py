@@ -27,7 +27,8 @@ async def index_project(request: Request, project_id: str, push_request: PushReq
     
     nlp_controller = NLPController(vectordb_client=request.app.vectordb_client,
                                    generation_client=request.app.generation_client,
-                                   embedding_client=request.app.embedding_client)
+                                   embedding_client=request.app.embedding_client,
+                                   template_parser=None)
     
     has_records = True
     page_no = 1
@@ -92,7 +93,7 @@ async def search_index(request: Request, project_id: str, search_request: Search
                                                          limit=search_request.limit)
     
     if not results:
-        JSONResponse(
+        return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=ResponseSignal.VECTORDB_SEARCH_ERROR.value
         )
