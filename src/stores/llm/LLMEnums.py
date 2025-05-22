@@ -4,7 +4,7 @@ class LLMEnums(Enum):
 
     OPENAI = "OPENAI"
     COHERE = "COHERE"
-    HUGGINGFACE = "HUGGINGFACE"
+    OLLAMA = "OLLAMA"
     
 
 class OpenAIEnums(Enum):
@@ -19,6 +19,11 @@ class CohereEnums(Enum):
 
     DOCUMENT = "search_document"
     QUERY = "search_query"
+
+class OllamaEnums(Enum):
+    SYSTEM = "system"
+    USER = "user"
+    ASSISTANT = "assistant"
 
 class DocumentTypeEnums(Enum):
     DOCUMENT = "document"
