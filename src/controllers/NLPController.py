@@ -96,7 +96,7 @@ class NLPController(BaseController):
             self.template_parser.get("rag", "document_prompt", {
                     "doc_num": idx + 1,
                     "chunk_text": self.generation_client.process_text(doc.text),
-            }) or "blah blah blah blah"
+            })
             for idx, doc in enumerate(retrieved_documents)
         ])
 
