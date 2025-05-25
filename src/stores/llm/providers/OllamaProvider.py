@@ -3,6 +3,7 @@ from ..LLMEnums import OllamaEnums
 from openai import OpenAI
 import logging
 import requests
+from helpers.config import get_settings
 
 class OllamaProvider(LLMInterface):
     def __init__(self, api_key: str, api_url: str=None, 
@@ -70,11 +71,13 @@ class OllamaProvider(LLMInterface):
 
 
     def embed_text(self, text: str, document_type: str = None):
+        settings = get_settings()
+
         if not self.embedding_model_id:
             self.logger.error("Ollama embedding model was not set properly")
 
         response = requests.post(
-            'http://localhost:11434/api/embeddings',
+            ((settings.OLLAMA_API_URL)[:-3] + '/api/embeddings'),
             json={
                 'model': self.embedding_model_id,
                 'prompt': text
