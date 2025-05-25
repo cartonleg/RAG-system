@@ -116,11 +116,15 @@ async def answer_index(request: Request, project_id: str, search_request: Search
     answer, full_prompt, chat_history = nlp_controller.answer_rag_question(project=project, query=search_request.text,
                                                                            limit=search_request.limit, score_threshold=search_request.score_threshold)
     
+    
+    
     if not answer:
         return JSONResponse(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            content=ResponseSignal.RAG_ANSWER_ERROR.value
-        )
+                content={"status" : ResponseSignal.RAG_ANSWER_SUCCESS.value,
+                "answer": "Sorry, I couldn't find the answer to your query in my data-base",
+                "full_prompt": full_prompt,
+                "chat_history": chat_history}
+                )
     
     return JSONResponse(
                     content={"status" : ResponseSignal.RAG_ANSWER_SUCCESS.value,
