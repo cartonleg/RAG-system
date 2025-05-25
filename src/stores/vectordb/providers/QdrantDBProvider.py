@@ -106,8 +106,8 @@ class QdrantDBProvider(VectorDBInterface):
             
         return True
             
-    def search_by_vector(self, collection_name: str, vector: list, limit: int = 7):
-        results = self.client.search(collection_name=collection_name, query_vector=vector, limit=limit)
+    def search_by_vector(self, collection_name: str, vector: list, limit: int = 7, score_threshold: float = 0.5):
+        results = self.client.search(collection_name=collection_name, query_vector=vector, limit=limit, score_threshold=score_threshold)
 
         if not results or len(results)==0:
             return None

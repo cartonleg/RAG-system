@@ -56,7 +56,7 @@ class NLPController(BaseController):
         return True
     
 
-    def search_vector_db_collection(self, project: Project, text: str, limit: int = 10):
+    def search_vector_db_collection(self, project: Project, text: str, limit: int = 10, score_threshold: float = 0.5):
         # get collection_name
         collection_name = self.create_collection_name(project_id=project.project_id)
 
@@ -67,14 +67,14 @@ class NLPController(BaseController):
             return False
         
         # do semantic search
-        results = self.vectordb_client.search_by_vector(collection_name=collection_name, vector=vector, limit=limit)
+        results = self.vectordb_client.search_by_vector(collection_name=collection_name, vector=vector, limit=limit, score_threshold=score_threshold)
 
         if not results:
             return False
 
         return results
     
-    def answer_rag_question(self, project: Project, query: str, limit: int = 10):
+    def answer_rag_question(self, project: Project, query: str, limit: int = 10, score_threshold: float = 0.5):
 
         answer, full_prompt, chat_history = None, None, None
 
@@ -82,7 +82,8 @@ class NLPController(BaseController):
         retrieved_documents = self.search_vector_db_collection(
             project=project,
             text=query,
-            limit=limit
+            limit=limit,
+            score_threshold=score_threshold
         )
 
         if not retrieved_documents or len(retrieved_documents)==0:

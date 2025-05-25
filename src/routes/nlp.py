@@ -90,7 +90,7 @@ async def search_index(request: Request, project_id: str, search_request: Search
                                    template_parser=request.app.template_parser)
     
     results = nlp_controller.search_vector_db_collection(project=project, text=search_request.text, 
-                                                         limit=search_request.limit)
+                                                         limit=search_request.limit, score_threshold=search_request.score_threshold)
     
     if not results:
         return JSONResponse(
@@ -114,7 +114,7 @@ async def answer_index(request: Request, project_id: str, search_request: Search
                                    template_parser=request.app.template_parser)
     
     answer, full_prompt, chat_history = nlp_controller.answer_rag_question(project=project, query=search_request.text,
-                                                                           limit=search_request.limit)
+                                                                           limit=search_request.limit, score_threshold=search_request.score_threshold)
     
     if not answer:
         return JSONResponse(

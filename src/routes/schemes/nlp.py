@@ -7,4 +7,5 @@ class PushRequest(BaseModel):
 class SearchRequest(BaseModel):
     text: str
     limit: Optional[int] = 5
+    score_threshold: Optional[float] = 0.5
     
