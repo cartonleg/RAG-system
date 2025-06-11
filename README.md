@@ -143,3 +143,8 @@ This request only returns the most relative chunks depending on inputs that are 
 http://0.0.0.0:5000/nlp/index/answer/{project_id}
 ```
 This request takes the same exact input as the previouse request it just returns the answer instead.
+
+
+
+
+# ENJOY :)
